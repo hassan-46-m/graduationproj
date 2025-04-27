@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('medicine', function (Blueprint $table) {
+            $table->id();
 
             $table->string('MedicineName');
             $table->string('Composition');
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->string('Side_effects');
             $table->string('ImageURL');
             $table->string('Manufacturer');
-            $table->string('Price');
+            $table->string('Price (EGP)');
 
 
 

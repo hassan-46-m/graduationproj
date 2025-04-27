@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         $token = $user->createToken("user_token")->plainTextToken;
 
-        $user->save();
+        
         $reponse = [
             "status" => 200,
             "data" => $user,
@@ -72,7 +72,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
 {
-    $request->user()->tokens()->delete(); 
+    $request->user()->tokens()->delete();
 
     return response()->json([
         "status" => 200,
