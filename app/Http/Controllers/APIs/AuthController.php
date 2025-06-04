@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         $token = $user->createToken("user_token")->plainTextToken;
 
-        
+
         $reponse = [
             "status" => 200,
             "data" => $user,
@@ -69,6 +69,7 @@ class AuthController extends Controller
                     return response($reponse, 200);
 
     }
+    
 
     public function logout(Request $request)
 {

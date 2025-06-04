@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Favorites;
 use Illuminate\Database\Eloquent\Model;
 
 class medicine extends Model
@@ -17,5 +18,10 @@ class medicine extends Model
         'Uses',
         'Composition',
         ];
+
+        public function favoritedBy()
+{
+    return $this->hasMany(Favorites::class);
+}
 
 }

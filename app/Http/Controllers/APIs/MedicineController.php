@@ -28,7 +28,7 @@ class MedicineController extends Controller
             return response()->json(
                 [
                     'status'=>'200',
-                    'user_id' => auth()->id(),
+
                     'data'=>$medicines,
                     'message'=>'data found'
                 ]
@@ -52,14 +52,40 @@ class MedicineController extends Controller
         }
         else
         {
-            return response()->json(
-                [
-                    'status'=>'200',
-                    'data'=>$medicine,
-                    'message'=>'data found'
-                ]
-                );
+
+            if ($medicine->count() && auth()->check()) {
+                // نبحث إذا كان المستخدم ده بحث عن نفس الدواء قبل كده
+                $existingSearch = SearchHistory::where('user_id', auth()->id())
+                                               ->where('medicine_id', $medicine->id)
+                                               ->first(); // لو لقيته، نعمل تحديث للوقت
+
+                if ($existingSearch) {
+                    // إذا كان في سجل، نعمل تحديث للوقت (مثلاً آخر وقت بحث)
+                    $existingSearch->update([
+                        'updated_at' => now(), // بنحدث الوقت الحالي
+                    ]);
+                } else {
+                    // إذا مفيش سجل، نضيفه لأول مرة
+                    SearchHistory::create([
+                        'user_id' => auth()->id(),
+                        'medicine_id' => $medicine->id,
+                        'searched_at' => now(), // نضيف الوقت الحالي لأول مرة
+                    ]);
+                }
+            }
+
+            return response()->json([
+                "status" => 200,
+                'user_id' => auth()->id(),
+                'medicine_id' => $medicine->id,
+                "data" => $medicine,
+                "message" => "Medicine retrieved successfully"
+            ], 200);
+
         }
+
+
+
     }
     public function search($var)
 {
@@ -72,19 +98,6 @@ class MedicineController extends Controller
         ], 404);
     }
 
-    // ✅ move this here BEFORE the return
-    if ($medicine->count() && auth()->check()) {
-        $exists = SearchHistory::where('user_id', auth()->id())
-                               ->where('medicine_id', $medicine->first()->id)
-                               ->exists();
-
-        if (! $exists) {
-            SearchHistory::create([
-                'user_id' => auth()->id(),
-                'medicine_id' => $medicine->first()->id,
-            ]);
-        }
-    }
 
 
     return response()->json([
@@ -140,26 +153,6 @@ public function getSimilarCompositionMedicines($name)
         'similar_medicines' => $similarMedicines
     ]);
 }
-/*public function getRandomDrugs()
-    {
-        $drugs = Cache::remember('random_drugs', 60, function () {
-            return medicine::inRandomOrder()->limit(7)->get();
-        });
-
-        if ($drugs->isEmpty()) {
-            return response()->json([
-                "status" => 404,
-                "message" => "No medicines found"
-            ], 404);
-        }
-
-        return response()->json([
-            "status" => 200,
-            "data" => $drugs,
-            "message" => "Medicines retrieved successfully"
-        ], 200);
-    }
-*/
 
 
 }

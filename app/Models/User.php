@@ -3,8 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Favorites;
+use App\Models\SearchHistory;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -47,4 +49,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function searchHistories()
+{
+    return $this->hasMany(SearchHistory::class)->orderByDesc('created_at');
+}
+
+
+public function favorites()
+{
+    return $this->hasMany(Favorites::class);
+}
+
 }
