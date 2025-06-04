@@ -19,5 +19,8 @@ class SearchHistory extends Model
     {
         return $this->belongsTo(medicine::class);
     }
+
+
+
 }
 
