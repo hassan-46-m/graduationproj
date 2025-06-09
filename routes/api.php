@@ -46,3 +46,6 @@ Route::get('/search/{var}',[MedicineController::class,'search']);
 
 
 
+Route::get('/test-version', function() {
+    return 'Version 2 working';
+});
