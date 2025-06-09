@@ -10,6 +10,8 @@ use App\Http\Controllers\APIs\MedicineController;
 
 Route::post("register", [AuthController::class, 'register']);
 Route::post("login", [AuthController::class, 'login']);
+ Route::post('/forgotpassword', [AuthController::class, 'sendResetLink']);
+Route::post('/resetpassword', [AuthController::class, 'reset']);
 
 Route::middleware(['auth:sanctum'])->post('/logout', [AuthController::class, 'logout']);
 
